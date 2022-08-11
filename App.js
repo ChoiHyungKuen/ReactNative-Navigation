@@ -1,36 +1,38 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  getFocusedRouteNameFromRoute,
+  NavigationContainer,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import HomeScreen from './screens/HomeScreen';
+import MainScreen from './screens/MainScreen';
 import DetailScreen from './screens/DetailScreen';
-import {Text, TouchableOpacity, View} from 'react-native';
 
 const Stack = createNativeStackNavigator();
+
+function getHeaderTitle(route) {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
+  const nameMap = {
+    Home: '홈',
+    Search: '검색',
+    Notification: '알림',
+    Message: '메시지',
+  };
+
+  return nameMap[routeName];
+}
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator>
         <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            title: '홈',
-            headerStyle: {
-              backgroundColor: '#29b6f6',
-            },
-            headerTintColor: '#ffffff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              fontSize: 20,
-            },
-          }}
+          name="Main"
+          component={MainScreen}
+          options={({route}) => ({
+            title: getHeaderTitle(route),
+          })}
         />
-        <Stack.Screen
-          name="Detail"
-          component={DetailScreen}
-          options={({route}) => ({title: `상세 정보 - ${route.params.id}`})}
-        />
+        <Stack.Screen name="Detail" component={DetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
